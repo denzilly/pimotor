@@ -25,7 +25,7 @@ time.sleep(1)
 
 #These are the pulse sequences that define how the motor turns, in half steps
 
-sequence_cw =  [ [1,0,1,1],
+sequence_ccw =  [ [1,0,1,1],
              [1,0,1,0],
              [1,1,1,0],
              [0,1,1,0],
@@ -34,7 +34,7 @@ sequence_cw =  [ [1,0,1,1],
              [1,1,0,1],
              [1,0,0,1], ]
 
-sequence_ccw =  [ [1,0,0,1],
+sequence_cw =  [ [1,0,0,1],
              [1,1,0,1],
              [0,1,0,1],
              [0,1,1,1],
@@ -57,11 +57,17 @@ print("Activator pin is live!")
 
 time.sleep(2)
 
-rot = input("How many degrees of rotation?")
-spd = input("Rotation speed? (time between pulses)")
-direction = "sequence_" + input("Direction of rotation? (cw or ccw)")
+rot = float(input("How many degrees of rotation?"))
+spd = float(input("Rotation speed? (time between pulses)"))
+di = input("Direction of rotation? (cw or ccw)")
 
-step_count = rot/2.8125
+
+if (di == "cw"):
+    direction = sequence_cw
+else:
+    direction = sequence_ccw
+    
+step_count = round(rot/2.8125)
 
 for i in range(step_count):
     for half_step in range(8):
@@ -71,9 +77,7 @@ for i in range(step_count):
             #print("Pin %s status is: " % (str(pin)) + str(GPIO.input(pin)))
         time.sleep(spd)
 
-initialize()
 
-print(count)
 
 print("Sequence Complete")
 
