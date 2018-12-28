@@ -5,25 +5,25 @@ import RPi.GPIO as GPIO
 pins = [17,18,22,23]
 Enable_293 = 2
 
-    #These are the pulse sequences that define how the motor turns, in half steps
+#These are the pulse sequences that define how the motor turns, in half steps
 
-    sequence_ccw =  [ [1,0,1,1],
-                 [1,0,1,0],
-                 [1,1,1,0],
-                 [0,1,1,0],
-                 [0,1,1,1],
-                 [0,1,0,1],
-                 [1,1,0,1],
-                 [1,0,0,1], ]
+sequence_ccw =  [ [1,0,1,1],
+             [1,0,1,0],
+             [1,1,1,0],
+             [0,1,1,0],
+             [0,1,1,1],
+             [0,1,0,1],
+             [1,1,0,1],
+             [1,0,0,1], ]
 
-    sequence_cw =  [ [1,0,0,1],
-                 [1,1,0,1],
-                 [0,1,0,1],
-                 [0,1,1,1],
-                 [0,1,1,0],
-                 [1,1,1,1],
-                 [1,0,1,0],
-                 [1,0,1,1], ]
+sequence_cw =  [ [1,0,0,1],
+             [1,1,0,1],
+             [0,1,0,1],
+             [0,1,1,1],
+             [0,1,1,0],
+             [1,1,1,1],
+             [1,0,1,0],
+             [1,0,1,1], ]
 
 
 
@@ -102,7 +102,9 @@ def get_params():
     while True:
         try:
             di = str(input("Direction of rotation? (cw or ccw)"))
-            if (di != "ccw") & (di != "cw"):
+            
+            
+            if (di != "cw") & (di != "ccw"):
                 raise NotCWError
 
             break
