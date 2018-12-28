@@ -5,7 +5,7 @@ GPIO.setmode(GPIO.BCM)
 
 #output pins
 pins = [17,18,22,23]
-a_pin = 2
+Enable_293 = 2
 
 
 #Initialize motor driver GPIO pins to state 1 (L293D IC interprets 1 as zero state)
@@ -15,10 +15,10 @@ for pin in pins:
     GPIO.output(pin, 1)
 
 #Initialize enable pin to state 0
-GPIO.setup(2, GPIO.OUT)
-GPIO.output(2, 0)
+GPIO.setup(Enable_293, GPIO.OUT)
+GPIO.output(Enable_293, 0)
 
-
+#Wait x seconds
 time.sleep(1)
 
 
@@ -49,13 +49,14 @@ sequence_cw =  [ [1,0,0,1],
 for pin in pins:
     print("Pin %s status is: " % (str(pin)) + str(GPIO.input(pin)))
 
+print("Pin %s status is: " % (str(Enable_293)) + str(GPIO.input(Enable_293)))
 
 
-GPIO.output(2, 1)
+GPIO.output(Enable_293, 1)
 
-print("Activator pin is live!")
+print("Enable 293D pin is live!")
 
-time.sleep(2)
+time.sleep(1)
 
 rot = float(input("How many degrees of rotation?"))
 spd = float(input("Rotation speed? (time between pulses)"))
@@ -81,7 +82,12 @@ for i in range(step_count):
 
 print("Sequence Complete")
 
-GPIO.output(2,0)
+GPIO.output(Enable_293,0)
+
+for pin in pins:
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, 1)
 
 print("Activation pin disabled")
-GPIO.cleanup()
+#input("Pause")
+#GPIO.cleanup()
