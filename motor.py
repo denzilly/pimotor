@@ -1,13 +1,41 @@
 import time
 import RPi.GPIO as GPIO
 
+#output pins
+pins = [17,18,22,23]
+Enable_293 = 2
+
+    #These are the pulse sequences that define how the motor turns, in half steps
+
+    sequence_ccw =  [ [1,0,1,1],
+                 [1,0,1,0],
+                 [1,1,1,0],
+                 [0,1,1,0],
+                 [0,1,1,1],
+                 [0,1,0,1],
+                 [1,1,0,1],
+                 [1,0,0,1], ]
+
+    sequence_cw =  [ [1,0,0,1],
+                 [1,1,0,1],
+                 [0,1,0,1],
+                 [0,1,1,1],
+                 [0,1,1,0],
+                 [1,1,1,1],
+                 [1,0,1,0],
+                 [1,0,1,1], ]
+
+
+
+
+
+
+
 def setup():
 
     GPIO.setmode(GPIO.BCM)
 
-    #output pins
-    pins = [17,18,22,23]
-    Enable_293 = 2
+
 
 
     #Initialize motor driver GPIO pins to state 1 (L293D IC interprets 1 as zero state)
@@ -107,27 +135,6 @@ def runmotor():
     print("Enable 293D pin is live!")
 
     time.sleep(1)
-
-    #These are the pulse sequences that define how the motor turns, in half steps
-
-    sequence_ccw =  [ [1,0,1,1],
-                 [1,0,1,0],
-                 [1,1,1,0],
-                 [0,1,1,0],
-                 [0,1,1,1],
-                 [0,1,0,1],
-                 [1,1,0,1],
-                 [1,0,0,1], ]
-
-    sequence_cw =  [ [1,0,0,1],
-                 [1,1,0,1],
-                 [0,1,0,1],
-                 [0,1,1,1],
-                 [0,1,1,0],
-                 [1,1,1,1],
-                 [1,0,1,0],
-                 [1,0,1,1], ]
-
 
     #Get parameters from user as list [rot, spd, di]
     params = get_params()
