@@ -1,11 +1,20 @@
 import time
 import RPi.GPIO as GPIO
 
-#output pins
+
+class NotPositiveError(UserWarning):
+    pass
+class NotCWError(UserWarning):
+    pass
+    
+#output pins Motor1
 pins = [17,18,22,23]
 Enable_293 = 2
 
-#These are the pulse sequences that define how the motor turns, in half steps
+#output pins Motor2
+pins2=[20,21]
+
+#These are the pulse sequences that define how the motor1 turns, in half steps
 
 sequence_ccw =  [ [1,0,1,1],
              [1,0,1,0],
@@ -25,9 +34,12 @@ sequence_cw =  [ [1,0,0,1],
              [1,0,1,0],
              [1,0,1,1], ]
 
-
-
-
+# These are the pin states how the motor2 turns:
+# pin 19 &  pin 20
+#   0         0     stop
+#   0         1     CW
+#   1         0     CCW
+#   1         1     stop
 
 
 
@@ -171,3 +183,58 @@ for pin in pins:
 print("Activation pin disabled")
 #input("Pause")
 #GPIO.cleanup()
+
+
+print("Activation Motor 2")
+
+#def Setup_Motor2()
+#    GPIO.setmode(GPIO.BCM)
+
+
+#Initialize motor2 driver GPIO pins to state 0 (ULN2003 IC interprets 1 as high state, 0 as low)
+
+for pin in pins2:
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, 0)
+
+# These are the pin states how the motor2 turns:
+# pin 19 &  pin 20
+#   0         0     stop
+#   0         1     CW
+#   1         0     CCW
+#   1         1     stop
+
+  
+#Wait x seconds
+    time.sleep(1)
+    
+    while True:
+        try:
+            di2 = str(input("Direction of rotation? (cw or ccw)"))
+            
+            
+            if (di2 != "cw") & (di2 != "ccw"):
+                raise NotCWError
+
+            break
+
+        except ValueError:
+            print ("Please enter ccw or cw")
+            continue
+
+        except NotCWError:
+            print ("Please enter ccw or cw")
+            continue
+
+if di2 != "cw":
+    GPIO.output(20, 1)
+else:
+    GPIO.output(21, 1)
+print(GPIO.input(21)
+print(GPIO.input(20))
+# Motor2 runs for 4 seconds
+time.sleep(4)
+
+for pin in pins2:
+          GPIO.output(pin, 0)
+        
