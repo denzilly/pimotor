@@ -8,32 +8,49 @@ class NotCWError(UserWarning):
     pass
     
 #output pins Motor1
-pins = [17,18,22,23]
-Enable_293 = 2
+pins = [4,18,17,23]
+#Enable_293 = 2
 
 #output pins Motor2
-pins2=[20,21]
+#pins2=[20,21]
 
 #These are the pulse sequences that define how the motor1 turns, in half steps
 
-sequence_ccw =  [ [1,0,1,1],
-             [1,0,1,0],
-             [1,1,1,0],
-             [0,1,1,0],
-             [0,1,1,1],
+#sequence_ccw =  [ [1,0,1,1],
+#             [1,0,1,0],
+#             [1,1,1,0],
+#             [0,1,1,0],
+#             [0,1,1,1],
+#             [0,1,0,1],
+#             [1,1,0,1],
+#             [1,0,0,1], ]
+sequence_ccw =  [ [0,1,0,0],
              [0,1,0,1],
-             [1,1,0,1],
-             [1,0,0,1], ]
-
-sequence_cw =  [ [1,0,0,1],
-             [1,1,0,1],
-             [0,1,0,1],
-             [0,1,1,1],
-             [0,1,1,0],
-             [1,1,1,1],
+             [0,0,0,1],
+             [1,0,0,1],
+             [1,0,0,0],
              [1,0,1,0],
-             [1,0,1,1], ]
+             [0,0,1,0],
+             [0,1,1,0], ]
+#sequence_cw =  [ [1,0,0,1],
+#             [1,1,0,1],
+#             [0,1,0,1],
+#             [0,1,1,1],
+#             [0,1,1,0],
+#             [1,1,1,1],
+#             [1,0,1,0],
+#             [1,0,1,1], ]
 
+
+# New sequence
+sequence_cw = [ [1,0,0,0],
+     [1,1,0,0],
+     [0,1,0,0],
+     [0,1,1,0],
+     [0,0,1,0],
+     [0,0,1,1],
+     [0,0,0,1],
+      [1,0,0,1] ]
 # These are the pin states how the motor2 turns:
 # pin 19 &  pin 20
 #   0         0     stop
@@ -50,15 +67,15 @@ def setup():
 
 
 
-    #Initialize motor driver GPIO pins to state 1 (L293D IC interprets 1 as zero state)
+    #Initialize motor driver GPIO pins to state 0 (ULN2003 IC interprets 0 as high state)
 
     for pin in pins:
         GPIO.setup(pin, GPIO.OUT)
-        GPIO.output(pin, 1)
+        GPIO.output(pin, 0)
 
     #Initialize enable pin to state 0
-    GPIO.setup(Enable_293, GPIO.OUT)
-    GPIO.output(Enable_293, 0)
+#    GPIO.setup(Enable_293, GPIO.OUT)
+#    GPIO.output(Enable_293, 0)
 
     #Wait x seconds
     time.sleep(1)
@@ -80,7 +97,7 @@ def get_params():
             rot = int(input("How many degrees of rotation?"))
             if (rot < 0):
                 raise NotPositiveError
-            print(rot)
+#            print(rot)
             break
 
         except ValueError:
@@ -140,13 +157,12 @@ def runmotor():
     #Check status of all pins
     for pin in pins:
         print("Pin %s status is: " % (str(pin)) + str(GPIO.input(pin)))
-
-    print("Pin %s status is: " % (str(Enable_293)) + str(GPIO.input(Enable_293)))
+#    print("Pin %s status is: " % (str(Enable_293)) + str(GPIO.input(Enable_293)))
 
     #Activate enable pin
-    GPIO.output(Enable_293, 1)
+#    GPIO.output(Enable_293, 1)
 
-    print("Enable 293D pin is live!")
+#    print("Enable 293D pin is live!")
 
     time.sleep(1)
 
@@ -164,77 +180,30 @@ def runmotor():
         for half_step in range(8):
             for pin in range(4):
                 GPIO.output(pins[pin], direction[half_step][pin])
-            #for pin in pins:
-                #print("Pin %s status is: " % (str(pin)) + str(GPIO.input(pin)))
+            for pin in pins:
+                print("Pin %s status is: " % (str(pin)) + str(GPIO.input(pin)))
             time.sleep(params[1])
 
 setup()
+
+#pause
+
 runmotor()
 
-
-print("Sequence Complete")
-
-GPIO.output(Enable_293,0)
+#pause
 
 for pin in pins:
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, 1)
+    GPIO.output(pin, 0)
+    
+for pin in pins:
+    print("Pin %s status is: " % (str(pin)) + str(GPIO.input(pin)))
+    
+print("Sequence Complete")
 
-print("Activation pin disabled")
+
 #input("Pause")
 #GPIO.cleanup()
 
 
-print("Activation Motor 2")
 
-#def Setup_Motor2()
-#    GPIO.setmode(GPIO.BCM)
-
-
-#Initialize motor2 driver GPIO pins to state 0 (ULN2003 IC interprets 1 as high state, 0 as low)
-
-for pin in pins2:
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, 0)
-
-# These are the pin states how the motor2 turns:
-# pin 19 &  pin 20
-#   0         0     stop
-#   0         1     CW
-#   1         0     CCW
-#   1         1     stop
-
-  
-#Wait x seconds
-    time.sleep(1)
-    
-    while True:
-        try:
-            di2 = str(input("Direction of rotation? (cw or ccw)"))
-            
-            
-            if (di2 != "cw") & (di2 != "ccw"):
-                raise NotCWError
-
-            break
-
-        except ValueError:
-            print ("Please enter ccw or cw")
-            continue
-
-        except NotCWError:
-            print ("Please enter ccw or cw")
-            continue
-
-if di2 != "cw":
-    GPIO.output(20, 1)
-else:
-    GPIO.output(21, 1)
-print(GPIO.input(21)
-print(GPIO.input(20))
-# Motor2 runs for 4 seconds
-time.sleep(4)
-
-for pin in pins2:
-          GPIO.output(pin, 0)
         
