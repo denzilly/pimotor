@@ -180,6 +180,7 @@ def runmotor():
         for half_step in range(8):
             for pin in range(4):
                 GPIO.output(pins[pin], direction[half_step][pin])
+                input1 = input("press enter for next sequence")
             for pin in pins:
                 print("Pin %s status is: " % (str(pin)) + str(GPIO.input(pin)))
             time.sleep(params[1])
